@@ -66,24 +66,22 @@ Conditional_Expectation_Backtesting <- function(returns, spec, quantiles = c(.95
       print(paste(i, "out of", test_length))
     }
   }
-  if (test){
-    num_exceedances <- numeric(num_quantiles)
+  num_exceedances <- numeric(num_quantiles)
 
-    exceedances_tracker <- vector("list", num_quantiles)
+  exceedances_tracker <- vector("list", num_quantiles)
 
-    names(exceedances_tracker) <- paste0("quantile_", quantiles)
+  names(exceedances_tracker) <- paste0("quantile_", quantiles)
 
-    exceedances_tracker2 <- vector("list", num_quantiles)
+  exceedances_tracker2 <- vector("list", num_quantiles)
 
-    names(exceedances_tracker2) <- paste0("quantile_", quantiles)
+  names(exceedances_tracker2) <- paste0("quantile_", quantiles)
 
-    test_returns = as.vector(returns[(n+h):(length(returns))])
+  test_returns = as.vector(returns[(n+h):(length(returns))])
 
-    for (i in 1:num_quantiles){
-      exceedances <- test_returns > tracker[, i]
-      exceedances_tracker[[i]] <- (test_returns[exceedances] - Sum_values_tracker[exceedances,i]) / sigma_hat[exceedances]
-      exceedances_tracker2[[i]] <- (test_returns[exceedances] - Sum_values_tracker[exceedances,i])
-    }
+  for (i in 1:num_quantiles){
+    exceedances <- test_returns > tracker[, i]
+    exceedances_tracker[[i]] <- (test_returns[exceedances] - Sum_values_tracker[exceedances,i]) / sigma_hat[exceedances]
+    exceedances_tracker2[[i]] <- (test_returns[exceedances] - Sum_values_tracker[exceedances,i])
   }
   return(list(spec = spec,
               h = h,

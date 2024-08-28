@@ -87,16 +87,7 @@ EVT_GARCH_future_steps_prediction <- function(returns, spec, quantiles = c(.95,.
   }
 }
 
-WTI <- read.csv("Data/Cushing_OK_WTI_Spot_Price_FOB (1).csv", skip = 4, header = TRUE)
-
-WTI$Day <- as.Date(WTI$Day, format = "%m/%d/%Y")
-
-WTI_xts <- xts(WTI$Cushing.OK.WTI.Spot.Price.FOB..Dollars.per.Barrel, order.by = WTI$Day)
-WTI_xts[-length(WTI_xts)]-WTI[-c(1)]
-
-returns <- -dailyReturn(WTI_xts, type = "log") * 100
-returns = na.omit(returns)
-data = as.numeric(returns)
+data <- as.numeric(returns)
 
 spec_AR1_GARCH11 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
                     mean.model = list(armaOrder = c(1, 0), include.mean = TRUE),
@@ -121,17 +112,7 @@ WTI_AR0_GARCH11_n500_k50_h5 = EVT_GARCH_future_steps_prediction(data, spec_AR0_G
 WTI_AR0_GARCH11_n500_k50_h10 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 500, k = 50, h = 10, timer = TRUE)
 WTI_AR0_GARCH11_n500_k50_h30 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 500, k = 50, h = 30, timer = TRUE)
 
-Brent <- read.csv("Data/Europe_Brent_Spot_Price_FOB.csv", skip = 4, header = TRUE)
 
-Brent$Day <- as.Date(Brent$Day, format = "%m/%d/%Y")
-plot(Brent,type='l')
-
-Brent_xts <- xts(Brent$Europe.Brent.Spot.Price.FOB..Dollars.per.Barrel, order.by = Brent$Day)
-# Calculate the daily log returns
-returns_Brent <- -dailyReturn(Brent_xts, type = "log") * 100
-returns_Brent = na.omit(returns_Brent)
-plot(returns_Brent)
-lines(returns,col='red')
 Brent_data = as.numeric(returns_Brent)
 
 Brent_AR1_GARCH11_n1000_k100_h1 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 1, timer = TRUE)

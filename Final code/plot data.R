@@ -4,18 +4,6 @@ library(zoo)
 library(dplyr)
 library(ggplot2)
 
-WTI <- read.csv("Data/WTI_price_data.csv", skip = 4, header = TRUE)
-WTI$Day <- as.Date(WTI$Day, format = "%m/%d/%Y")
-
-
-WTI_xts <- xts(WTI$Cushing.OK.WTI.Spot.Price.FOB..Dollars.per.Barrel, order.by = WTI$Day)
-WTI_df <- data.frame(Date = index(WTI_xts), Price = coredata(WTI_xts))
-
-
-returns <- -dailyReturn(WTI_xts, type = "log") * 100
-returns = na.omit(returns)
-returns_df <- data.frame(Date = index(returns), Daily_Return = coredata(returns))
-
 
 price_plot <- ggplot(WTI_df, aes(x = Date, y = Price)) +
   geom_line(color = "black") +
@@ -58,23 +46,6 @@ returns_plot <- ggplot(returns_df, aes(x = Date, y = daily.returns)) +
   labs(title = "WTI Negative Log Returns", x = "Date", y = "Daily Return (%)")
 
 print(returns_plot)
-
-
-
-
-
-Brent <- read.csv("Data/Brent_price_data.csv", skip = 4, header = TRUE)
-
-Brent$Day <- as.Date(Brent$Day, format = "%m/%d/%Y")
-
-Brent_xts <- xts(Brent$Europe.Brent.Spot.Price.FOB..Dollars.per.Barrel, order.by = Brent$Day)
-Brent_df <- data.frame(Date = index(Brent_xts), Price = coredata(Brent_xts))
-
-returns_Brent <- -dailyReturn(Brent_xts, type = "log") * 100
-returns_Brent = na.omit(returns_Brent)
-returns_Brent_df <- data.frame(Date = index(returns_Brent), Daily_Return = coredata(returns_Brent))
-
-Brent_data = as.numeric(returns_Brent)
 
 
 price_plot <- ggplot(Brent_df, aes(x = Date, y = Price)) +

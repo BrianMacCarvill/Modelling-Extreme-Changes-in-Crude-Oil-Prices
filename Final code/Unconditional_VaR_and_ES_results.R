@@ -6,14 +6,14 @@ library(xts)
 library(zoo)
 
 
-data = as.numeric(returns$daily.returns)
+data <- as.numeric(returns$daily.returns)
 WTI_VaR_h1 = Unconditional_VaR(data, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 1)
 WTI_VaR_h5 = Unconditional_VaR(data, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 5)
 WTI_VaR_h10 = Unconditional_VaR(data, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 10)
 WTI_VaR_h30 = Unconditional_VaR(data, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 30)
 
 
-data_Brent = as.numeric(returns_Brent$daily.returns)
+data_Brent <- as.numeric(returns_Brent$daily.returns)
 Brent_VaR_h1 = Unconditional_VaR(data_Brent, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 1)
 Brent_VaR_h5 = Unconditional_VaR(data_Brent, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 5)
 Brent_VaR_h10 = Unconditional_VaR(data_Brent, n = 1000, k = 100, quantiles = c(.95, .99,.995), h = 10)
@@ -98,7 +98,7 @@ create_plot <- function(data, tracker_name) {
     )
 }
 
-tracker_name = c("WTI ES difference (95% quantile)", "WTI ES difference (99% quantile)", " ")
+tracker_name <- c("WTI ES difference (95% quantile)", "WTI ES difference (99% quantile)", " ")
 for (i in seq_along(Unconditional_exceedances)) {
   data <- data.frame(Index = seq_along(Unconditional_exceedances[[i]]), Value = Unconditional_exceedances[[i]])
   p <- create_plot(data, tracker_name[i])

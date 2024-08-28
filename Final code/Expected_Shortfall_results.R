@@ -9,7 +9,6 @@ spec_AR0_GARCH11 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrde
                                distribution.model = "norm")
 
 
-
 data = as.numeric(returns)
 
 h_values <- c(1, 5, 10, 30)

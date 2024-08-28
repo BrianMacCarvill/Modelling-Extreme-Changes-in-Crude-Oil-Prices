@@ -32,8 +32,8 @@ fixed_params <- list(
   beta1 = beta1
 )
 
-n <- 1000  # Replacing window_size
-h <- 5     # Replacing forecast_horizon
+n <- 1000
+h <- 5
 n_rolls <- length(returns) - n - h + 1
 
 forecasts <- matrix(NA, ncol = h, nrow = n_rolls)
@@ -65,7 +65,9 @@ for (i in 1:n_rolls) {
 par(mfrow = c(1,1))
 
 forecast_errors <- forecasts - actual_values
-residuals <- forecast_errors[,1] / sigma_forecasts[,1]
+
+# Change to residuals <- forecast_errors[,5] / sigma_forecasts[,5] for plots in Figure 13
+residuals <- forecast_errors[,5] / sigma_forecasts[,5]
 
 a <- GPD_numerical_stability(residuals, thresholds = seq(quantile(residuals, .90), quantile(residuals, .99), length.out = 1000))
 

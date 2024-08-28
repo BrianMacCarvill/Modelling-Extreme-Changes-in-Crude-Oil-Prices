@@ -3,9 +3,9 @@ library(rugarch)
 ts_data <- WTI_data
 aic_bic_results <- data.frame(p = integer(), q = integer(), r = integer(), AIC = numeric(), BIC = numeric())
 
-ps = 2
-qs = 3
-rs = 3
+ps <- 2
+qs <- 3
+rs <- 3
 for (p in 1:ps) {
   for (q in 1:qs) {
     for (r in 1:rs) {
