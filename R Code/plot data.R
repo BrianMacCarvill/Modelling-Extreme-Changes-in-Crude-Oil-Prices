@@ -84,8 +84,8 @@ acf_p <- ggplot(acf_data, aes(x = lag, y = acf)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   geom_hline(yintercept = 0.05, linetype = "dashed") +
   geom_hline(yintercept = -0.05, linetype = "dashed") +
-  annotate("text", x = 40, y = 0.05, label = "0.05", hjust = 1.1, vjust = -0.5, color = "black", size = 3) +  # Add text annotation at y = 0.05
-  annotate("text", x = 40, y = -0.05, label = "-0.05", hjust = 1.1, vjust = 1.5, color = "black", size = 3) +  # Add text annotation at y = -0.05
+  annotate("text", x = 40, y = 0.05, label = "0.05", hjust = 1.1, vjust = -0.5, color = "black", size = 3) +
+  annotate("text", x = 40, y = -0.05, label = "-0.05", hjust = 1.1, vjust = 1.5, color = "black", size = 3) +
   labs(title = "ACF of Absolute Returns", x = "Lag", y = "ACF") +
   theme_minimal(base_family = "sans") +
   theme(

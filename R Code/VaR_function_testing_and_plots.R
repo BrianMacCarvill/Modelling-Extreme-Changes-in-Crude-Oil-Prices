@@ -146,9 +146,9 @@ quantiles_data <- data.frame(
 plot_data <- full_join(returns_df, quantiles_data, by = "Index")
 
 p <- ggplot(plot_data, aes(x = Index)) +
-  geom_line(aes(y = daily.returns), color = "black", linewidth = .5) +  # Main data
-  geom_line(aes(y = Quantile_0.95), color = "blue", linetype = "dashed", size = .5) +  # Quantile 0.95
-  geom_line(aes(y = Quantile_0.99), color = "red", linetype = "dashed", size = .5) +  # Quantile 0.99
+  geom_line(aes(y = daily.returns), color = "black", linewidth = .5) +
+  geom_line(aes(y = Quantile_0.95), color = "blue", linetype = "dashed", size = .5) +
+  geom_line(aes(y = Quantile_0.99), color = "red", linetype = "dashed", size = .5) +
   labs(title = "VaR at Quantiles",
        x = "Index",
        y = "Value") +

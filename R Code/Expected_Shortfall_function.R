@@ -20,7 +20,6 @@ Conditional_Expectation_Backtesting <- function(returns, spec, quantiles = c(.95
 
   num_quantiles <- length(quantiles)
 
-  # Initialize the tracker data frame with the appropriate number of columns
   tracker <- data.frame(matrix(0, nrow = test_length, ncol = num_quantiles))
 
   Sum_values_tracker <- data.frame(matrix(0, nrow = test_length, ncol = num_quantiles))
