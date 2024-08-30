@@ -9,7 +9,7 @@ Conditional_Expectation_Backtesting <- function(returns, spec, quantiles = c(.95
     )
   }
 
-  return_value_function = function(n,k,q,beta,xi){
+  return_value_function <- function(n,k,q,beta,xi){
     z_q = (beta/xi)*(((1-q)/(k/n))^(-xi)-1)
     return(z_q)
   }
@@ -76,7 +76,7 @@ Conditional_Expectation_Backtesting <- function(returns, spec, quantiles = c(.95
 
   names(exceedances_tracker2) <- paste0("quantile_", quantiles)
 
-  test_returns = as.vector(returns[(n+h):(length(returns))])
+  test_returns <- as.vector(returns[(n+h):(length(returns))])
 
   for (i in 1:num_quantiles){
     exceedances <- test_returns > tracker[, i]

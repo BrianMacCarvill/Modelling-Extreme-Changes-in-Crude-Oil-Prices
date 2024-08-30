@@ -1,8 +1,8 @@
 Unconditional_expected_shortfall = function(returns, n = 1000, k = 100, quantiles = c(.95,.99), h = 1, test = TRUE){
   simple_function = function(returns=returns,quantiles,steps=1, n = 1000){
-    test = 1*(returns[(n+steps):(length(returns))]>quantiles)
-    breaches = sum(test)
-    percenage_breach = mean(test)
+    test <- 1*(returns[(n+steps):(length(returns))]>quantiles)
+    breaches <- sum(test)
+    percenage_breach <- mean(test)
     return(list(
       breaches = breaches,
       percenage_breach = percenage_breach

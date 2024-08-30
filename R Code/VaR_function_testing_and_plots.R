@@ -102,6 +102,11 @@ WTI_AR1_GARCH11_n1000_k100_h5 = EVT_GARCH_future_steps_prediction(data, spec_AR1
 WTI_AR1_GARCH11_n1000_k100_h10 = EVT_GARCH_future_steps_prediction(data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 10, timer = TRUE)
 WTI_AR1_GARCH11_n1000_k100_h30 = EVT_GARCH_future_steps_prediction(data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 30, timer = TRUE)
 
+WTI_AR0_GARCH11_n1000_k100_h1 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 1, timer = TRUE)
+WTI_AR0_GARCH11_n1000_k100_h5 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 5, timer = TRUE)
+WTI_AR0_GARCH11_n1000_k100_h10 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 10, timer = TRUE)
+WTI_AR0_GARCH11_n1000_k100_h30 = EVT_GARCH_future_steps_prediction(data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 30, timer = TRUE)
+
 WTI_AR1_GARCH11_n500_k50_h1 = EVT_GARCH_future_steps_prediction(data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 500, k = 50, h = 1, timer = TRUE)
 WTI_AR1_GARCH11_n500_k50_h5 = EVT_GARCH_future_steps_prediction(data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 500, k = 50, h = 5, timer = TRUE)
 WTI_AR1_GARCH11_n500_k50_h10 = EVT_GARCH_future_steps_prediction(data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 500, k = 50, h = 10, timer = TRUE)
@@ -119,6 +124,11 @@ Brent_AR1_GARCH11_n1000_k100_h1 = EVT_GARCH_future_steps_prediction(Brent_data, 
 Brent_AR1_GARCH11_n1000_k100_h5 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 5, timer = TRUE)
 Brent_AR1_GARCH11_n1000_k100_h10 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 10, timer = TRUE)
 Brent_AR1_GARCH11_n1000_k100_h30 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR1_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 30, timer = TRUE)
+
+Brent_AR0_GARCH11_n1000_k100_h1 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 1, timer = TRUE)
+Brent_AR0_GARCH11_n1000_k100_h5 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 5, timer = TRUE)
+Brent_AR0_GARCH11_n1000_k100_h10 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 10, timer = TRUE)
+Brent_AR0_GARCH11_n1000_k100_h30 = EVT_GARCH_future_steps_prediction(Brent_data, spec_AR0_GARCH11, quantiles = c(.95, .99, .995), n = 1000, k = 100, h = 30, timer = TRUE)
 
 
 returns_df <- data.frame(

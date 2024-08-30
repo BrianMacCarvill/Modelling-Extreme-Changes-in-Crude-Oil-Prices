@@ -30,11 +30,9 @@ ggplot(mean_past_threshold_WTI, aes(x = thresholds, y = mean_past_threshold_list
   geom_vline(xintercept = quantiles, color = "red", linetype = "dashed") +
   annotate("text", x = quantiles, y = c(3, 3, 3),
            label = quantile_list, color = "red", vjust = -0.5, hjust = -0.1, size = 3.5) +
-  labs(y = "Mean Excess", x = "Threshold (u)", title = "WTI Mean Excesses") + theme_bw() +
+  labs(y = "Mean Excess", x = "Threshold (u)", title = "WTI Mean Excesses") +
   theme(
     plot.title = element_text(hjust = 0.5),
-    panel.grid.major = element_line(color = "grey90"),
-    panel.grid.minor = element_line(color = "grey90")
   )
 
 # Brent data read in "Read and plot data" file
@@ -48,10 +46,8 @@ ggplot(mean_past_threshold_Brent, aes(x = thresholds, y = mean_past_threshold_li
   geom_vline(xintercept = quantiles, color = "red", linetype = "dashed") +
   annotate("text", x = quantiles, y = c(3, 3, 3),
            label = quantile_list, color = "red", vjust = -0.5, hjust = -0.1, size = 2.5) +
-  labs(y = "Mean Excess", x = "Threshold (u)", title = "Brent Mean Excesses") + theme_bw() +
+  labs(y = "Mean Excess", x = "Threshold (u)", title = "Brent Mean Excesses") +
   theme(
     plot.title = element_text(hjust = 0.5),
-    panel.grid.major = element_line(color = "grey90"),
-    panel.grid.minor = element_line(color = "grey90")
   )
 

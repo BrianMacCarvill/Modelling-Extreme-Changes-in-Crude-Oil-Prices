@@ -8,24 +8,24 @@ spec <- ugarchspec(
   distribution.model = "norm"
 )
 
-initial_fit <- ugarchfit(spec = spec, data = returns)
+fit1 <- ugarchfit(spec = spec, data = returns)
 
-initial_params <- coef(initial_fit)
+params <- coef(fit1)
 
-mu <- as.numeric(initial_params["mu"])
-ar1 <- as.numeric(initial_params["ar1"])
-omega <- as.numeric(initial_params["omega"])
-alpha1 <- as.numeric(initial_params["alpha1"])
-beta1 <- as.numeric(initial_params["beta1"])
+ar0 <- as.numeric(params["mu"])
+ar1 <- as.numeric(params["ar1"])
+omega <- as.numeric(params["omega"])
+alpha1 <- as.numeric(params["alpha1"])
+beta1 <- as.numeric(params["beta1"])
 
-cat("phi_0:", mu, "\n")
-cat("phi_1:", ar1, "\n")
-cat("alpha_0:", omega, "\n")
-cat("alpha_1:", alpha1, "\n")
-cat("beta_1:", beta1, "\n")
+cat("phi_0:", ar0)
+cat("phi_1:", ar1)
+cat("alpha_0:", omega)
+cat("alpha_1:", alpha1)
+cat("beta_1:", beta1)
 
-fixed_params <- list(
-  mu = mu,
+params_list <- list(
+  mu = ar0,
   ar1 = ar1,
   omega = omega,
   alpha1 = alpha1,
@@ -34,20 +34,19 @@ fixed_params <- list(
 
 n <- 1000
 h <- 5
-n_rolls <- length(returns) - n - h + 1
+test_length <- length(returns) - n - h + 1
 
-forecasts <- matrix(NA, ncol = h, nrow = n_rolls)
-sigma_forecasts <- matrix(NA, ncol = h, nrow = n_rolls)
-actual_values <- matrix(NA, ncol = h, nrow = n_rolls)
-
+forecasts <- matrix(NA, ncol = h, nrow = test_length)
+sigma_forecasts <- matrix(NA, ncol = h, nrow = test_length)
+actual_values <- matrix(NA, ncol = h, nrow = test_length)
 fixed_spec <- ugarchspec(
   variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
   mean.model = list(armaOrder = c(1, 0), include.mean = TRUE),
   distribution.model = "norm",
-  fixed.pars = fixed_params
+  fixed.pars = params_list
 )
 
-for (i in 1:n_rolls) {
+for (i in 1:test_length) {
   start_index <- i
   end_index <- start_index + n - 1
   forecast_start_index <- end_index + 1
@@ -67,7 +66,7 @@ par(mfrow = c(1,1))
 forecast_errors <- forecasts - actual_values
 
 # Change to residuals <- forecast_errors[,5] / sigma_forecasts[,5] for plots in Figure 13
-residuals <- forecast_errors[,5] / sigma_forecasts[,5]
+residuals <- forecast_errors[,1] / sigma_forecasts[,1]
 
 a <- GPD_numerical_stability(residuals, thresholds = seq(quantile(residuals, .90), quantile(residuals, .99), length.out = 1000))
 
@@ -88,8 +87,7 @@ df_shape <- data.frame(
 mean_past_threshold_values <- mean_past_threshold(residuals, thresholds = seq(quantile(residuals, .90), quantile(residuals, .99999), length.out = 10000))
 data_mean_past <- data.frame(
   thresholds = mean_past_threshold_values$thresholds,
-  mean_past_threshold = mean_past_threshold_values$mean_past_threshold_list
-)
+  mean_past_threshold = mean_past_threshold_values$mean_past_threshold_list)
 
 p1 <- ggplot(df_scale, aes(x = thresholds, y = scale_mle)) +
   geom_line(color = "black", size = 1) +

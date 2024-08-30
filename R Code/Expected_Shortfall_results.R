@@ -1,5 +1,5 @@
 library(ismev)
-
+library(ggplot2)
 spec_AR1_GARCH11 <- ugarchspec(variance.model = list(model = "sGARCH", garchOrder = c(1, 1)),
                     mean.model = list(armaOrder = c(1, 0), include.mean = TRUE),
                     distribution.model = "norm")
@@ -83,7 +83,7 @@ library(ggplot2)
 create_plot <- function(data, tracker_name) {
   ggplot(data, aes(x = Index, y = Value)) +
     geom_line(color = "black", size = .5) +
-    geom_hline(yintercept = 0, color = "black", linetype = "dashed", size = 1.2) +
+    geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
     labs(title = tracker_name, x = "Index", y = "Value") +
     theme_minimal() +
     theme(
@@ -97,18 +97,18 @@ create_plot <- function(data, tracker_name) {
 
 exceedances_tracker = WTI_AR1_GARCH11_results[[1]]$exceedances_tracker
 
-tracker_name = c("WTI ES difference (95% quantile)", "WTI ES difference (99% quantile)", " ")
-for (i in seq_along(exceedances_tracker)) {
-  data <- data.frame(Index = seq_along(exceedances_tracker[[i]]), Value = exceedances_tracker[[i]])
+tracker_name = c("WTI ES difference (95% quantile)", "WTI ES difference (99% quantile)", "WTI ES difference (99.5% quantile)")
+for (i in length(exceedances_tracker)) {
+  data <- data.frame(Index = 1:length(exceedances_tracker[[i]]), Value = exceedances_tracker[[i]])
   p <- create_plot(data, tracker_name[i])
   print(p)
 }
 
 exceedances_tracker = Brent_AR1_GARCH11_results[[1]]$exceedances_tracker
 
-tracker_name = c("Brent ES difference (95% quantile)", "Brent ES difference (99% quantile)", " ")
-for (i in seq_along(exceedances_tracker)) {
-  data <- data.frame(Index = seq_along(exceedances_tracker[[i]]), Value = exceedances_tracker[[i]])
+tracker_name = c("Brent ES difference (95% quantile)", "Brent ES difference (99% quantile)", "Brent ES difference (99.5% quantile)")
+for (i in 1:length(exceedances_tracker)) {
+  data <- data.frame(Index = 1:length(exceedances_tracker[[i]]), Value = exceedances_tracker[[i]])
   p <- create_plot(data, tracker_name[i])
   print(p)
 }
@@ -134,31 +134,28 @@ for (i in seq_along(exceedances_tracker)) {
 
 
 
-mean_var_all = function(results_list) {
-  mean_var_list = list()
-
+mean_var_all <- function(results_list) {
+  mean_var_list <- list()
+  names <- names(results_list[[1]]$exceedances_tracker)
   for (i in 1:length(results_list)) {
-    result = results_list[[i]]
-    name = names(result$exceedances_tracker)
+    for (j in 1:length(results_list[[i]]$exceedances_tracker)) {
+      var_val <- var(results_list[[i]]$exceedances_tracker[[j]]) / length(results_list[[i]]$exceedances_tracker[[j]])
+      var_val2 <- var(results_list[[i]]$exceedances_tracker[[j]])
+      mean_val <- mean(results_list[[i]]$exceedances_tracker[[j]])
 
-    for (j in 1:length(result$exceedances_tracker)) {
-      quantile_name = name[j]
-      var_val = var(result$exceedances_tracker[[j]]) / length(result$exceedances_tracker[[j]])
-      var_val2 = var(result$exceedances_tracker[[j]])
-      mean_val = mean(result$exceedances_tracker[[j]])
-
-      if (is.null(mean_var_list[[quantile_name]])) {
-        mean_var_list[[quantile_name]] = list(mean = c(), var = c(), var2 = c())
-      }
-
-      mean_var_list[[quantile_name]]$mean = c(mean_var_list[[quantile_name]]$mean, mean_val)
-      mean_var_list[[quantile_name]]$var = c(mean_var_list[[quantile_name]]$var, var_val)
-      mean_var_list[[quantile_name]]$var2 = c(mean_var_list[[quantile_name]]$var2, var_val2)
+      mean_var_list[[names[j]]]$mean <- c(mean_var_list[[names[j]]]$mean, mean_val)
+      mean_var_list[[names[j]]]$var <- c(mean_var_list[[names[j]]]$var, var_val)
+      mean_var_list[[names[j]]]$var2 <- c(mean_var_list[[names[j]]]$var2, var_val2)
     }
   }
 
   return(mean_var_list)
 }
+
+
+# Replace with code below to get the results from a AR(0)-GARCH(1,1) model
+#means_vars_Brent_AR1 = mean_var_all(Brent_AR0_GARCH11_results)
+#means_vars_WTI_AR1 = mean_var_all(WTI_AR0_GARCH11_results)
 
 means_vars_Brent_AR1 = mean_var_all(Brent_AR1_GARCH11_results)
 means_vars_WTI_AR1 = mean_var_all(WTI_AR1_GARCH11_results)
@@ -184,54 +181,48 @@ means_vars_WTI_AR1 = mean_var_all(WTI_AR1_GARCH11_results)
 
 
 
-h_values <- c(1, 5, 10, 30)
+x_pos<- 1:length(h_values)
 
-x_positions <- 1:length(h_values)
+means_Brent <- means_vars_Brent_AR1$quantile_0.95$mean
+vars_Brent <- means_vars_Brent_AR1$quantile_0.95$var
 
-means_95_Brent = means_vars_Brent_AR1$quantile_0.95$mean
-vars_95_Brent = means_vars_Brent_AR1$quantile_0.95$var
+means_WTI <- means_vars_WTI_AR1$quantile_0.95$mean
+vars_WTI <- means_vars_WTI_AR1$quantile_0.95$var
 
-means_95_WTI = means_vars_WTI_AR1$quantile_0.95$mean
-vars_95_WTI = means_vars_WTI_AR1$quantile_0.95$var
+se_Brent <- sqrt(vars_Brent)
+ci_lower_Brent <- means_Brent - 1.96 * se_Brent
+ci_upper_Brent <- means_Brent + 1.96 * se_Brent
 
-se_95_Brent = sqrt(vars_95_Brent)
-ci_lower_95_Brent = means_95_Brent - 1.96 * se_95_Brent
-ci_upper_95_Brent = means_95_Brent + 1.96 * se_95_Brent
+se_WTI <- sqrt(vars_WTI)
+ci_lower_WTI <- means_WTI - 1.96 * se_WTI
+ci_upper_WTI <- means_WTI + 1.96 * se_WTI
 
-se_95_WTI = sqrt(vars_95_WTI)
-ci_lower_95_WTI = means_95_WTI - 1.96 * se_95_WTI
-ci_upper_95_WTI = means_95_WTI + 1.96 * se_95_WTI
+data_Brent <- data.frame(
+  x_position = x_pos,
+  Mean = means_Brent,
+  CI_Lower = ci_lower_Brent,CI_Upper = ci_upper_Brent
+  ,Data = "1")
 
-plot_data_Brent = data.frame(
-  x_position = x_positions,
-  Mean = means_95_Brent,
-  CI_Lower = ci_lower_95_Brent,
-  CI_Upper = ci_upper_95_Brent,
-  Dataset = "Brent_AR1"
+data_WTI <- data.frame(
+  x_position = x_pos,
+  Mean = means_WTI,
+  CI_Lower = ci_lower_WTI,
+  CI_Upper = ci_upper_WTI,
+  Data = "2"
 )
 
-plot_data_WTI = data.frame(
-  x_position = x_positions,
-  Mean = means_95_WTI,
-  CI_Lower = ci_lower_95_WTI,
-  CI_Upper = ci_upper_95_WTI,
-  Dataset = "WTI_AR1"
-)
+data_combined <- rbind(data_Brent, data_WTI)
 
-plot_data_combined = rbind(plot_data_Brent, plot_data_WTI)
-
-ggplot(plot_data_combined, aes(x = x_position, y = Mean, color = Dataset, group = Dataset)) +
+ggplot(data_combined, aes(x = x_position, y = Mean, color = Data)) +
   geom_line() +
   geom_point() +
   geom_errorbar(aes(ymin = CI_Lower, ymax = CI_Upper), width = 0.2) +
   scale_x_continuous(
-    breaks = x_positions,
-    labels = h_values,
-    limits = c(0.5, length(h_values) + 0.5),
-    expand = expansion(mult = c(0.05, 0.05))
+    breaks = x_pos,
+    labels = h_values
   ) +
   labs(title = "Mean and Confidence Intervals for Quantile 95% ES difference",
-       x = "Forcested steps (h)",
+       x = "Forecasted steps (h)",
        y = "Mean") +
   theme_minimal() +
   theme(legend.position = "none")
@@ -253,53 +244,49 @@ ggplot(plot_data_combined, aes(x = x_position, y = Mean, color = Dataset, group 
 
 
 
-means_99_Brent = means_vars_Brent_AR1$quantile_0.99$mean
-vars_99_Brent = means_vars_Brent_AR1$quantile_0.99$var
 
-means_99_WTI = means_vars_WTI_AR1$quantile_0.99$mean
-vars_99_WTI = means_vars_WTI_AR1$quantile_0.99$var
+means_Brent <- means_vars_Brent_AR1$quantile_0.99$mean
+vars_Brent <- means_vars_Brent_AR1$quantile_0.99$var
 
-se_99_Brent = sqrt(vars_99_Brent)
-ci_lower_99_Brent = means_99_Brent - 1.96 * se_99_Brent
-ci_upper_99_Brent = means_99_Brent + 1.96 * se_99_Brent
+means_WTI <- means_vars_WTI_AR1$quantile_0.99$mean
+vars_WTI <- means_vars_WTI_AR1$quantile_0.99$var
 
-se_99_WTI = sqrt(vars_99_WTI)
-ci_lower_99_WTI = means_99_WTI - 1.96 * se_99_WTI
-ci_upper_99_WTI = means_99_WTI + 1.96 * se_99_WTI
+se_Brent <- sqrt(vars_Brent)
+ci_lower_Brent <- means_Brent - 1.96 * se_Brent
+ci_upper_Brent <- means_Brent + 1.96 * se_Brent
 
-plot_data_Brent_99 = data.frame(
-  x_position = x_positions,
-  Mean = means_99_Brent,
-  CI_Lower = ci_lower_99_Brent,
-  CI_Upper = ci_upper_99_Brent,
-  Dataset = "Brent_AR1"
+se_WTI <- sqrt(vars_WTI)
+ci_lower_WTI <- means_WTI - 1.96 * se_WTI
+ci_upper_WTI <- means_WTI + 1.96 * se_WTI
+data_Brent <- data.frame(
+  x_position = x_pos,
+  Mean = means_Brent,
+  CI_Lower = ci_lower_Brent,
+  CI_Upper = ci_upper_Brent,
+  Data = "1"
 )
 
-plot_data_WTI_99 = data.frame(
-  x_position = x_positions,
-  Mean = means_99_WTI,
-  CI_Lower = ci_lower_99_WTI,
-  CI_Upper = ci_upper_99_WTI,
-  Dataset = "WTI_AR1"
+data_WTI <- data.frame(
+  x_position = x_pos,
+  Mean = means_WTI,
+  CI_Lower = ci_lower_WTI,
+  CI_Upper = ci_upper_WTI,
+  Data = "2"
 )
 
-plot_data_combined_99 = rbind(plot_data_Brent_99, plot_data_WTI_99)
+data_combined <- rbind(data_Brent, data_WTI)
 
-ggplot(plot_data_combined_99, aes(x = x_position, y = Mean, color = Dataset, group = Dataset)) +
+ggplot(data_combined, aes(x = x_position, y = Mean, color = Data)) +
   geom_line() +
   geom_point() +
   geom_errorbar(aes(ymin = CI_Lower, ymax = CI_Upper), width = 0.2) +
   scale_x_continuous(
-    breaks = x_positions,
-    labels = h_values,
-    limits = c(0.5, length(h_values) + 0.5),
-    expand = expansion(mult = c(0.05, 0.05))
+    breaks = x_pos,
+    labels = h_values
   ) +
   labs(title = "Mean and Confidence Intervals for Quantile 99% ES difference",
-       x = "Forcested steps (h)",
-       y = "Mean") +
-  theme_minimal() +
-  theme(legend.position = "none")
+       x = "Forecasted steps (h)",
+       y = "Mean") + theme_minimal() + theme(legend.position = "none")
 
 
 
@@ -308,13 +295,46 @@ ggplot(plot_data_combined_99, aes(x = x_position, y = Mean, color = Dataset, gro
 
 
 
+means_Brent <- means_vars_Brent_AR1$quantile_0.995$mean
+vars_Brent <- means_vars_Brent_AR1$quantile_0.995$var
 
+means_WTI <- means_vars_WTI_AR1$quantile_0.995$mean
+vars_WTI <- means_vars_WTI_AR1$quantile_0.995$var
 
+se_Brent <- sqrt(vars_Brent)
+ci_lower_Brent <- means_Brent - 1.96 * se_Brent
+ci_upper_Brent <- means_Brent + 1.96 * se_Brent
 
+se_WTI <- sqrt(vars_WTI)
+ci_lower_WTI <- means_WTI - 1.96 * se_WTI
+ci_upper_WTI <- means_WTI + 1.96 * se_WTI
 
+data_Brent <- data.frame(
+  x_position = x_pos,
+  Mean = means_Brent,
+  CI_Lower = ci_lower_Brent,
+  CI_Upper = ci_upper_Brent,
+  Data = "1"
+)
 
+data_WTI <- data.frame(
+  x_position = x_pos,
+  Mean = means_WTI,
+  CI_Lower = ci_lower_WTI,
+  CI_Upper = ci_upper_WTI,
+  Data = "2"
+)
 
+data_combined <- rbind(data_Brent, data_WTI)
 
-
-
+ggplot(data_combined, aes(x = x_position, y = Mean, color = Data)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = CI_Lower, ymax = CI_Upper), width = 0.2) +
+  scale_x_continuous(
+    breaks = x_pos,
+    labels = h_values
+  ) + labs(title = "Mean and Confidence Intervals for Quantile 99.5% ES difference",
+       x = "Forecasted steps (h)",
+       y = "Mean") + theme_minimal() + theme(legend.position = "none")
 

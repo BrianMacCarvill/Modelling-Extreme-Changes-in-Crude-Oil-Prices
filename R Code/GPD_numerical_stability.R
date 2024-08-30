@@ -1,8 +1,7 @@
 GPD_numerical_stability <- function(data, thresholds = seq(quantile(data, .05), quantile(data, .99), length.out = 80)) {
 
   n <- length(thresholds)
-  parameters <- list(thresholds = thresholds,
-                     scale_mle = numeric(n),
+  parameters <- list(thresholds = thresholds,scale_mle = numeric(n),
                      shape_mle = numeric(n),
                      scale_se = numeric(n),
                      shape_se = numeric(n))
